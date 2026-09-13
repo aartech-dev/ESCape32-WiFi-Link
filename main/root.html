@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-brand="@BRAND@">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AART Remora™ Programmer</title>
+<title>@BRAND_TITLE@</title>
 <script>const langData=@LANG_DATA@;</script>
 <style>
 :root {
@@ -27,13 +27,41 @@
 	--sel:      #8b5cf6;
 	--val:      #a5d0ff;
 	--mono:     Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+	--font-body:    -apple-system, 'Trebuchet MS', Helvetica, Arial, sans-serif;
+	--font-heading: 'Trebuchet MS', 'Arial Narrow', Arial, sans-serif;
+}
+/* NSR brand theme — white / red / black, browser-standard system font
+   (no Trebuchet MS dependency). Only the variables that differ are
+   redefined here; everything else inherits the default palette above. */
+:root[data-brand="nsr"] {
+	--bg:       #ffffff;
+	--bg2:      #f7f7f8;
+	--bg3:      #f0f0f2;
+	--bg4:      #e8e8ec;
+	--border:   #d8d8dc;
+	--border2:  #b8b8c0;
+	--text:     #16171a;
+	--text2:    #55565c;
+	--text3:    #8a8b92;
+	--accent:   #ed1c24;
+	--accent2:  #ff4d54;
+	--accentbg: rgba(237,28,36,0.08);
+	--accentbg2:rgba(237,28,36,0.16);
+	--red:      #b0141c;
+	--redbg:    rgba(176,20,28,0.10);
+	--grn:      #1f9d55;
+	--grnbg:    rgba(31,157,85,0.10);
+	--sel:      #ed1c24;
+	--val:      #16171a;
+	--font-body:    system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+	--font-heading: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 * { box-sizing: border-box; }
 html, body {
 	margin: 0; padding: 0;
 	background: var(--bg);
 	color: var(--text);
-	font-family: -apple-system, 'Trebuchet MS', Helvetica, Arial, sans-serif;
+	font-family: var(--font-body);
 	font-size: 15px;
 	line-height: 1.5;
 	min-height: 100vh;
@@ -49,7 +77,7 @@ html, body {
 	height: 52px;
 }
 #header .logo {
-	font-family: 'Trebuchet MS', 'Arial Narrow', Arial, sans-serif;
+	font-family: var(--font-heading);
 	font-weight: 700;
 	font-size: 1.35rem;
 	letter-spacing: 0.12em;
@@ -58,7 +86,7 @@ html, body {
 	white-space: nowrap;
 }
 #header .subtitle {
-	font-family: -apple-system, 'Trebuchet MS', Helvetica, Arial, sans-serif;
+	font-family: var(--font-body);
 	font-size: 0.72rem;
 	font-weight: 300;
 	letter-spacing: 0.18em;
@@ -68,7 +96,7 @@ html, body {
 }
 #header .spacer { flex: 1; }
 #lang {
-	font-family: -apple-system, 'Trebuchet MS', Helvetica, Arial, sans-serif;
+	font-family: var(--font-body);
 	font-size: 0.75rem;
 	background: var(--bg3);
 	color: var(--text2);
@@ -94,7 +122,7 @@ html, body {
 	border-bottom: 2px solid var(--border);
 }
 #menu button.item {
-	font-family: 'Trebuchet MS', 'Arial Narrow', Arial, sans-serif;
+	font-family: var(--font-heading);
 	font-size: 0.85rem;
 	font-weight: 600;
 	letter-spacing: 0.1em;
@@ -147,7 +175,7 @@ label { white-space: nowrap; font-size: 0.875rem; font-weight: 500; color: var(-
 .field-hint { font-size: 0.72rem; color: var(--text3); font-style: italic; }
 
 input, button, select, textarea {
-	font-family: -apple-system, 'Trebuchet MS', Helvetica, Arial, sans-serif;
+	font-family: var(--font-body);
 	font-size: 0.875rem;
 	background: var(--bg3);
 	color: var(--val);
@@ -198,7 +226,7 @@ select { cursor: pointer; }
 
 /* Buttons */
 button {
-	font-family: 'Trebuchet MS', 'Arial Narrow', Arial, sans-serif;
+	font-family: var(--font-heading);
 	font-weight: 600;
 	font-size: 0.82rem;
 	letter-spacing: 0.1em;
@@ -233,7 +261,7 @@ hr {
 	margin: 1.2em 0;
 }
 .section-label {
-	font-family: 'Trebuchet MS', 'Arial Narrow', Arial, sans-serif;
+	font-family: var(--font-heading);
 	font-size: 0.72rem;
 	font-weight: 600;
 	letter-spacing: 0.2em;
@@ -279,7 +307,7 @@ hr {
 
 /* ── RESULT ─────────────────────────────────────────── */
 .result {
-	font-family: 'Trebuchet MS', 'Arial Narrow', Arial, sans-serif;
+	font-family: var(--font-heading);
 	font-weight: 600;
 	font-size: 0.82rem;
 	letter-spacing: 0.08em;
@@ -486,8 +514,8 @@ b.kbd {
 <body>
 
 <div id="header">
-	<span class="logo">AART</span>
-	<span class="subtitle">Remora&trade; Programmer</span>
+	<span class="logo">@BRAND_LOGO@</span>
+	<span class="subtitle">@BRAND_SUBTITLE@</span>
 	<div class="spacer"></div>
 	<select id="lang" onchange="setlang(value)">@LANG_OPTS@</select>
 </div>
@@ -589,7 +617,7 @@ b.kbd {
 		<div class="wifi-section">
 			<div class="wifi-grid">
 				<label for="wifi-ssid">SSID</label>
-				<input type="text" id="wifi-ssid" maxlength="32" placeholder="ESCape32-WiFi-Link">
+				<input type="text" id="wifi-ssid" maxlength="32" placeholder="@BRAND_SSID@">
 				<label for="wifi-pass" data-lang="W01">Password</label>
 				<input type="password" id="wifi-pass" maxlength="64" placeholder="(open — no password)">
 			</div>
@@ -601,7 +629,7 @@ b.kbd {
 			</div>
 		</div>
 		<div class="hint">
-			<span data-lang="W03">Default SSID: <span class="badge">ESCape32-WiFi-Link</span> &nbsp; Default password: none (open).</span>
+			<span data-lang="W03">Default SSID: <span class="badge">@BRAND_SSID@</span> &nbsp; Default password: none (open).</span>
 		</div>
 	</div>
 
@@ -741,12 +769,19 @@ b.kbd {
 		</div>
 	</div>
 
-	<div id="footer">AART Remora&trade; Programmer &nbsp;·&nbsp; <a href="https://aart.dev" target="_blank">aart.dev</a> &nbsp;·&nbsp; ESCape32 @PROJECT_VER@</div>
+	<div id="footer">@BRAND_FOOTER_HTML@ &nbsp;·&nbsp; ESCape32 @PROJECT_VER@</div>
 </div>
 
 <div id="toast"></div>
 
 <script>
+/* Product brand for this build — see BRAND in the top-level CMakeLists.txt.
+   Drives the built-in motor catalog, the IndexedDB name (kept separate per
+   brand so a browser that's previously talked to an AART device at the
+   default AP IP doesn't see stale data when it then talks to an NSR one,
+   or vice versa), and which tabs are available. */
+const BRAND = '@BRAND@';
+
 /* ─────────────────────────────────────────────────────
    BITFIELD helpers (unchanged from original)
 ───────────────────────────────────────────────────── */
@@ -1159,7 +1194,8 @@ const handlers = {
 			return base;
 		});
 		const rendered = lines.join('<br>');
-		document.getElementById('info').innerHTML = rendered;
+		const infoEl = document.getElementById('info');
+		if (infoEl) infoEl.innerHTML = rendered;
 		const ecomInfo = document.getElementById('ecom-info');
 		if (ecomInfo) ecomInfo.innerHTML = rendered;
 		resettimer(1);
@@ -1175,7 +1211,8 @@ const handlers = {
 			res.push(`<td class="min">${getfield(key, val)} <span class="hint field-hint" data-lang="${key}">${strs[key] || ''}</span></td>`);
 			res.push('</tr>');
 		}
-		document.getElementById('show').innerHTML = res.join('');
+		const showEl = document.getElementById('show');
+		if (showEl) showEl.innerHTML = res.join('');
 		checkdeps();
 		if (tabnum == 1) showtab(1);
 		// Build eCom grid whenever we get fresh data — but only if not mid-edit
@@ -1461,18 +1498,18 @@ function saveWifi() {
 	send(`_wifi_set ${ssid}\t${pass}\n`);
 }
 function resetWifi() {
-	document.getElementById('wifi-ssid').value = 'ESCape32-WiFi-Link';
+	document.getElementById('wifi-ssid').value = '@BRAND_SSID@';
 	document.getElementById('wifi-pass').value = '';
-	send('_wifi_set ESCape32-WiFi-Link\t\n');
+	send('_wifi_set @BRAND_SSID@\t\n');
 }
 
 /* ─────────────────────────────────────────────────────
    Preset management
 ───────────────────────────────────────────────────── */
 
-// MOTOR DATABASE — built-in catalog entries
+// MOTOR DATABASE — built-in catalog entries, one array per brand
 // Each motor: { vendor, model, poles, kv[], params{} }
-const BUILTIN_MOTORS = [
+const BUILTIN_MOTORS_AART = [
   { vendor:'EMAX',    model:'RS1106 II', poles:12, kvList:[4500,6000,7500],
     params:{ damp:1,revdir:0,timing:14,freq_min:48,freq_max:96,duty_min:100,duty_max:100,duty_spup:30,duty_ramp:50,duty_rate:35,analog_min:0,analog_max:1440 }},
   { vendor:'Parma',   model:'1105',      poles:12, kvList:[3000,4500,6500],
@@ -1495,8 +1532,21 @@ const BUILTIN_MOTORS = [
     params:{ damp:1,revdir:0,timing:28,freq_min:96,freq_max:96,duty_min:100,duty_max:100,duty_spup:70,duty_ramp:90,duty_rate:80,analog_min:0,analog_max:1440 }},
 ];
 
+// NSR Remora 3 tuning — both profiles apply to either the 2,000Kv or the
+// 6,000Kv 12-pole motor; duty_rate is what differentiates them (measured:
+// duty_rate 20 → ~28A peak, 47,620rpm @ 100ms; duty_rate 5 → ~12A peak,
+// 20,000rpm @ 100ms — roughly half the acceleration and peak current).
+const BUILTIN_MOTORS_NSR = [
+  { vendor:'NSR', model:'High Performance', poles:12, kvList:[2000,6000],
+    params:{ damp:1,revdir:0,timing:15,freq_min:48,freq_max:48,duty_min:100,duty_max:100,duty_spup:20,duty_ramp:20,duty_rate:20,analog_min:0,analog_max:1440 }},
+  { vendor:'NSR', model:'Softer Acceleration', poles:12, kvList:[2000,6000],
+    params:{ damp:1,revdir:0,timing:15,freq_min:48,freq_max:48,duty_min:100,duty_max:100,duty_spup:20,duty_ramp:20,duty_rate:5,analog_min:0,analog_max:1440 }},
+];
+
+const BUILTIN_MOTORS = BRAND === 'nsr' ? BUILTIN_MOTORS_NSR : BUILTIN_MOTORS_AART;
+
 // ── IndexedDB motor database ──────────────────────────────────────
-const DB_NAME = 'aart_motors', DB_VER = 1, STORE = 'motors';
+const DB_NAME = BRAND + '_motors', DB_VER = 1, STORE = 'motors';
 let motorDb = null, motorDbReady = false;
 
 function openMotorDb() {
@@ -1855,6 +1905,16 @@ function refreshSavedPresets() {
 /* ─────────────────────────────────────────────────────
    Init
 ───────────────────────────────────────────────────── */
+// NSR is a single-purpose Remora 3 programmer — the full parameter table
+// (Settings) and startup-melody editor (Music) aren't part of that product.
+function removeUnbrandedTabs() {
+	if (BRAND !== 'nsr') return;
+	['item1', 'item2', 'tab1off', 'tab1on', 'tab2off', 'tab2on'].forEach(id => {
+		document.getElementById(id)?.remove();
+	});
+	document.querySelector('#menu .menu-spacer')?.remove();
+}
+
 (async () => {
 	await setlang(localStorage.getItem('lang') || navigator.language.substring(0, 2) || 'en');
 	setvolume(25);
@@ -1862,6 +1922,7 @@ function refreshSavedPresets() {
 	activeMotorPoles = parseInt(localStorage.getItem('activeMotorPoles')) || null;
 	// Init motor DB and populate preset selectors (non-blocking)
 	initMotorDb().then(() => populatePresetSelectors());
+	removeUnbrandedTabs();
 	opentab(5);
 })();
 </script>

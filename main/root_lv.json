@@ -115,7 +115,7 @@
 	"W00": "Piekļuves punkta identitāte",
 	"W01": "Parole",
 	"W02": "Izmaiņas stājas spēkā pēc ierīces atkārtotas ieslēgšanas.",
-	"W03": "Noklusējuma SSID: ESCape32-WiFi-Link   Noklusējuma parole: nav (atvērts).",
+	"W03": "Noklusējuma SSID: @BRAND_SSID@   Noklusējuma parole: nav (atvērts).",
 	"M00": "Motoru datubāze",
 	"M01": "Meklēt ražotāju / modeli…",
 	"M02": "+ Jauns",

@@ -115,7 +115,7 @@
 	"W00": "Tożsamość punktu dostępu",
 	"W01": "Hasło",
 	"W02": "Zmiany zaczynają obowiązywać po ponownym uruchomieniu urządzenia.",
-	"W03": "Domyślne SSID: ESCape32-WiFi-Link   Domyślne hasło: brak (sieć otwarta).",
+	"W03": "Domyślne SSID: @BRAND_SSID@   Domyślne hasło: brak (sieć otwarta).",
 	"M00": "Baza danych silników",
 	"M01": "Szukaj producenta / modelu…",
 	"M02": "+ Nowy",

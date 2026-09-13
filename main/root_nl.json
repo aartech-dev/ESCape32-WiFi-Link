@@ -115,7 +115,7 @@
 	"W00": "Identiteit toegangspunt",
 	"W01": "Wachtwoord",
 	"W02": "Wijzigingen worden van kracht na het herstarten van het apparaat.",
-	"W03": "Standaard SSID: ESCape32-WiFi-Link   Standaard wachtwoord: geen (open).",
+	"W03": "Standaard SSID: @BRAND_SSID@   Standaard wachtwoord: geen (open).",
 	"M00": "Motordatabase",
 	"M01": "Zoek fabrikant / model…",
 	"M02": "+ Nieuw",

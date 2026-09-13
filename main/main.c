@@ -27,8 +27,8 @@
 #include "mdns.h"
 #include "build_defs.h"
 
-#define SSID      "ESCape32-WiFi-Link"
-#define HOSTNAME  "escape32"
+#define SSID      BRAND_SSID
+#define HOSTNAME  BRAND_HOSTNAME
 
 #define NVS_NAMESPACE  "remora"
 #define NVS_KEY_SSID   "ssid"

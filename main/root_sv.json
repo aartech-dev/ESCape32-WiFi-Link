@@ -115,7 +115,7 @@
 	"W00": "Åtkomstpunktens identitet",
 	"W01": "Lösenord",
 	"W02": "Ändringar träder i kraft efter att enheten startats om.",
-	"W03": "Standard-SSID: ESCape32-WiFi-Link   Standardlösenord: inget (öppet).",
+	"W03": "Standard-SSID: @BRAND_SSID@   Standardlösenord: inget (öppet).",
 	"M00": "Motordatabas",
 	"M01": "Sök tillverkare / modell…",
 	"M02": "+ Ny",

@@ -115,7 +115,7 @@
 	"W00": "Identidade do ponto de acesso",
 	"W01": "Senha",
 	"W02": "As alterações entram em vigor após reiniciar o dispositivo.",
-	"W03": "SSID padrão: ESCape32-WiFi-Link   Senha padrão: nenhuma (aberta).",
+	"W03": "SSID padrão: @BRAND_SSID@   Senha padrão: nenhuma (aberta).",
 	"M00": "Banco de dados de motores",
 	"M01": "Buscar fabricante / modelo…",
 	"M02": "+ Novo",

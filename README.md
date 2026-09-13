@@ -91,6 +91,27 @@ idf.py build flash monitor
 #              or:        http://escape32.local
 ```
 
+### Building a different brand
+
+This same source tree also builds the **NSR Remora 3 Programmer** — a
+single-purpose variant for NSR's Remora 3 ESC only, with NSR's own color
+theme (white/red/black), a system-standard font instead of Trebuchet MS,
+an NSR-only built-in motor catalog, and no Settings/Music tabs. Select it
+with the `BRAND` CMake variable (default: `aart`):
+
+```bash
+idf.py set-target esp32s2
+idf.py build -D BRAND=nsr flash monitor
+
+# Or build into a separate directory to keep both binaries around:
+idf.py -B build_nsr -D BRAND=nsr build
+```
+
+`main/CMakeLists.txt` is the single source of truth for what differs
+between brands (logo text, colors, default AP name, built-in motors) — see
+the `BRAND STREQUAL "nsr"` block there. `mock_server.py --brand nsr` mirrors
+the same branding for local testing without hardware.
+
 ---
 
 ## How It Works

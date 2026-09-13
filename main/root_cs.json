@@ -115,7 +115,7 @@
 	"W00": "Identita přístupového bodu",
 	"W01": "Heslo",
 	"W02": "Změny se projeví po restartu zařízení.",
-	"W03": "Výchozí SSID: ESCape32-WiFi-Link   Výchozí heslo: žádné (otevřená síť).",
+	"W03": "Výchozí SSID: @BRAND_SSID@   Výchozí heslo: žádné (otevřená síť).",
 	"M00": "Databáze motorů",
 	"M01": "Hledat výrobce / model…",
 	"M02": "+ Nový",

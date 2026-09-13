@@ -115,7 +115,7 @@
 	"W00": "Pääsupunkti identiteet",
 	"W01": "Parool",
 	"W02": "Muudatused rakenduvad pärast seadme taaskäivitamist.",
-	"W03": "Vaikimisi SSID: ESCape32-WiFi-Link   Vaikimisi parool: puudub (avatud).",
+	"W03": "Vaikimisi SSID: @BRAND_SSID@   Vaikimisi parool: puudub (avatud).",
 	"M00": "Mootorite andmebaas",
 	"M01": "Otsi tootjat / mudelit…",
 	"M02": "+ Uus",

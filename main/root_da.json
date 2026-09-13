@@ -115,7 +115,7 @@
 	"W00": "Adgangspunktets identitet",
 	"W01": "Adgangskode",
 	"W02": "Ændringer træder i kraft, når enheden er genstartet.",
-	"W03": "Standard-SSID: ESCape32-WiFi-Link   Standardadgangskode: ingen (åben).",
+	"W03": "Standard-SSID: @BRAND_SSID@   Standardadgangskode: ingen (åben).",
 	"M00": "Motordatabase",
 	"M01": "Søg producent / model…",
 	"M02": "+ Ny",

@@ -96,7 +96,6 @@ MOCK_INFO = {
     "fw_target":      "Remora2",
 }
 
-DEFAULT_WIFI = {"ssid": "ESCape32-WiFi-Link", "pass": ""}
 
 # ──────────────────────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -113,12 +112,39 @@ WIFI_FILE  = PRESET_DIR / "wifi.json"
 LANG_FILES = {}
 HTML_PATH  = None
 
+# Mirrors the BRAND-conditional @VAR@ values set in main/CMakeLists.txt —
+# keep the two in sync when adding a brand variable there.
+BRAND_VARS = {
+    "aart": {
+        "BRAND":            "aart",
+        "BRAND_LOGO":       "AART",
+        "BRAND_TITLE":      "AART Remora™ Programmer",
+        "BRAND_SUBTITLE":   "Remora&trade; Programmer",
+        "BRAND_FOOTER_HTML": (
+            'AART Remora&trade; Programmer &nbsp;&middot;&nbsp; '
+            '<a href="https://aart.dev" target="_blank">aart.dev</a>'
+        ),
+        "BRAND_SSID": "ESCape32-WiFi-Link",
+    },
+    "nsr": {
+        "BRAND":            "nsr",
+        "BRAND_LOGO":       "NSR",
+        "BRAND_TITLE":      "NSR Remora 3 Programmer",
+        "BRAND_SUBTITLE":   "Remora 3 Programmer",
+        "BRAND_FOOTER_HTML": "NSR Remora 3 Programmer",
+        "BRAND_SSID": "NSR-Remora3",
+    },
+}
+BRAND = "aart"  # overridden by --brand in main()
+
 
 def load_lang_files(html_dir):
     for path in sorted(html_dir.glob("root_*.json")):
         m = re.match(r"root_(\w+)\.json", path.name)
         if m:
-            LANG_FILES[m.group(1)] = path.read_text(encoding="utf-8")
+            text = path.read_text(encoding="utf-8")
+            text = text.replace("@BRAND_SSID@", BRAND_VARS[BRAND]["BRAND_SSID"])
+            LANG_FILES[m.group(1)] = text
             log.info("Loaded language: %s", path.name)
 
 
@@ -128,7 +154,7 @@ def get_wifi():
             return json.loads(WIFI_FILE.read_text())
         except Exception:
             pass
-    return dict(DEFAULT_WIFI)
+    return {"ssid": BRAND_VARS[BRAND]["BRAND_SSID"], "pass": ""}
 
 
 def set_wifi(ssid, password):
@@ -404,6 +430,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
             lang_obj = '{{"en": {}}}'.format(en_raw)
             text = text.replace("@LANG_DATA@", lang_obj)
         text = text.replace("@PROJECT_VER@", "mock-dev")
+        for key, val in BRAND_VARS[BRAND].items():
+            text = text.replace("@{}@".format(key), val)
         return text.encode()
 
     def _raw(self, code, ctype, body):
@@ -452,7 +480,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
 # main
 # ──────────────────────────────────────────────────────────────────────────────
 def main():
-    global HTML_PATH
+    global HTML_PATH, BRAND
 
     ap = argparse.ArgumentParser(
         description="AART Remora(tm) Programmer - mock server"
@@ -461,6 +489,8 @@ def main():
                     help="HTTP/WS port (default 8080)")
     ap.add_argument("--html",  default=None,
                     help="Path to root.html (default: same dir as this script)")
+    ap.add_argument("--brand", choices=sorted(BRAND_VARS.keys()), default="aart",
+                    help="Product brand to simulate (default: aart)")
     ap.add_argument("--debug", action="store_true",
                     help="Verbose debug logging")
     args = ap.parse_args()
@@ -468,6 +498,7 @@ def main():
     if args.debug:
         logging.getLogger().setLevel(logging.DEBUG)
 
+    BRAND = args.brand
     HTML_PATH = Path(args.html) if args.html else SCRIPT_DIR / "main" / "root.html"
     if not HTML_PATH.exists():
         sys.exit(
@@ -485,6 +516,7 @@ def main():
     log.info(bar)
     log.info("  AART Remora(tm) Programmer  --  Mock Server")
     log.info(bar)
+    log.info("  Brand:     %s", BRAND)
     log.info("  HTML:      %s", HTML_PATH)
     log.info("  URL:       %s", url)
     log.info("  Presets:   %s/", PRESET_DIR)

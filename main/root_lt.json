@@ -115,7 +115,7 @@
 	"W00": "Prieigos taško identitetas",
 	"W01": "Slaptažodis",
 	"W02": "Pakeitimai įsigalioja iš naujo paleidus įrenginį.",
-	"W03": "Numatytasis SSID: ESCape32-WiFi-Link   Numatytasis slaptažodis: nėra (atviras).",
+	"W03": "Numatytasis SSID: @BRAND_SSID@   Numatytasis slaptažodis: nėra (atviras).",
 	"M00": "Variklių duomenų bazė",
 	"M01": "Ieškoti gamintojo / modelio…",
 	"M02": "+ Naujas",

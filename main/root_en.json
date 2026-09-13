@@ -115,7 +115,7 @@
 	"W00": "Access Point Identity",
 	"W01": "Password",
 	"W02": "Changes take effect after the device is power-cycled.",
-	"W03": "Default SSID: ESCape32-WiFi-Link   Default password: none (open).",
+	"W03": "Default SSID: @BRAND_SSID@   Default password: none (open).",
 	"M00": "Motor Database",
 	"M01": "Search vendor / model…",
 	"M02": "+ New",

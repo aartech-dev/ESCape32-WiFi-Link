@@ -115,7 +115,7 @@
 	"W00": "Identidad del punto de acceso",
 	"W01": "Contraseña",
 	"W02": "Los cambios surten efecto tras reiniciar el dispositivo.",
-	"W03": "SSID por defecto: ESCape32-WiFi-Link   Contraseña por defecto: ninguna (abierta).",
+	"W03": "SSID por defecto: @BRAND_SSID@   Contraseña por defecto: ninguna (abierta).",
 	"M00": "Base de datos de motores",
 	"M01": "Buscar fabricante / modelo…",
 	"M02": "+ Nuevo",

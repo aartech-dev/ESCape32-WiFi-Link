@@ -1,4 +1,25 @@
 idf_component_register(SRCS main.c PRIV_REQUIRES espressif__mdns)
+
+# Per-brand text substituted into root.html (@VAR@, via configure_file below)
+# and build_defs.h (compiled-in AP SSID/hostname defaults). See BRAND in the
+# top-level CMakeLists.txt. mock_server.py mirrors this for local testing —
+# keep the two in sync when adding a variable here.
+if(BRAND STREQUAL "nsr")
+	set(BRAND_LOGO        "NSR")
+	set(BRAND_TITLE       "NSR Remora 3 Programmer")
+	set(BRAND_SUBTITLE    "Remora 3 Programmer")
+	set(BRAND_FOOTER_HTML "NSR Remora 3 Programmer")
+	set(BRAND_SSID        "NSR-Remora3")
+	set(BRAND_HOSTNAME    "nsr-remora3")
+else()
+	set(BRAND_LOGO        "AART")
+	set(BRAND_TITLE       "AART Remora™ Programmer")
+	set(BRAND_SUBTITLE    "Remora&trade; Programmer")
+	set(BRAND_FOOTER_HTML "AART Remora&trade; Programmer &nbsp;&middot;&nbsp; <a href=\"https://aart.dev\" target=\"_blank\">aart.dev</a>")
+	set(BRAND_SSID        "ESCape32-WiFi-Link")
+	set(BRAND_HOSTNAME    "escape32")
+endif()
+
 set(lang_map en:EN fr:FR de:DE it:IT es:ES pt:PT nl:NL sv:SV da:DA uk:УК lv:LV fi:FI et:ET cs:CS pl:PL lt:LT zh:中)
 string(REGEX REPLACE "([a-z][a-z]):([^;]+)" "XX(\\1)" LANG_LIST "${lang_map}")
 string(REGEX REPLACE "([a-z][a-z]):([^;]+)" "<option value=\"\\1\">\\2</option>" LANG_OPTS "${lang_map}")

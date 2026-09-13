@@ -115,7 +115,7 @@
 	"W00": "Tukiaseman tunniste",
 	"W01": "Salasana",
 	"W02": "Muutokset tulevat voimaan laitteen uudelleenkäynnistyksen jälkeen.",
-	"W03": "Oletus-SSID: ESCape32-WiFi-Link   Oletussalasana: ei mitään (avoin).",
+	"W03": "Oletus-SSID: @BRAND_SSID@   Oletussalasana: ei mitään (avoin).",
 	"M00": "Moottoritietokanta",
 	"M01": "Hae valmistajaa / mallia…",
 	"M02": "+ Uusi",

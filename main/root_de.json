@@ -115,7 +115,7 @@
 	"W00": "Zugangspunkt-Identität",
 	"W01": "Passwort",
 	"W02": "Änderungen wirken nach dem nächsten Neustart.",
-	"W03": "Standard-SSID: ESCape32-WiFi-Link   Standardpasswort: keines (offen).",
+	"W03": "Standard-SSID: @BRAND_SSID@   Standardpasswort: keines (offen).",
 	"M00": "Motordatenbank",
 	"M01": "Hersteller / Modell suchen…",
 	"M02": "+ Neu",

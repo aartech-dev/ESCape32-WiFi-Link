@@ -1,1 +1,3 @@
 #define LANG_LIST(XX) @LANG_LIST@
+#define BRAND_SSID     "@BRAND_SSID@"
+#define BRAND_HOSTNAME "@BRAND_HOSTNAME@"
