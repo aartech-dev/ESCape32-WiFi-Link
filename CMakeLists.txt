@@ -9,10 +9,15 @@ if(NOT BRAND STREQUAL "aart" AND NOT BRAND STREQUAL "nsr")
 	message(FATAL_ERROR "Unknown BRAND '${BRAND}' — expected 'aart' or 'nsr'")
 endif()
 
-# Version scheme: <upstream-base>-aart.<aart-revision>
-# Tracks neoxic/ESCape32-WiFi-Link upstream; increment aart.N for AART-only
-# changes. Shared by both brands — only branding/config differs by BRAND.
-set(PROJECT_VER "1.10-aart.1")
+# Version scheme: <upstream-base>.<brand>.<brand-revision>
+# Tracks neoxic/ESCape32-WiFi-Link upstream in <upstream-base>; increment
+# <brand-revision> independently per brand for brand-relevant changes.
+set(PROJECT_VER_BASE "1.10")
+if(BRAND STREQUAL "nsr")
+	set(PROJECT_VER "${PROJECT_VER_BASE}.nsr.1")
+else()
+	set(PROJECT_VER "${PROJECT_VER_BASE}.aart.1")
+endif()
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 if(BRAND STREQUAL "nsr")
 	project(nsr-remora3-programmer)
