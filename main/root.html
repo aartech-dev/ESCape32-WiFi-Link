@@ -515,7 +515,10 @@ b.kbd {
 		<hr>
 		<div id="info"></div>
 		<div class="throt-wrap">
-			<input type="range" min="0" max="2000" value="0" id="throt" oninput="setthrot(value)">
+			<div class="btn-row">
+				<input type="range" min="0" max="2000" value="0" id="throt" oninput="rampThrotTo(value)" style="flex:1;min-width:120px">
+				<button class="danger" data-lang="B06" onclick="stopThrot()"></button>
+			</div>
 			<div class="hint" data-lang="H00"></div>
 		</div>
 	</div>
@@ -638,7 +641,10 @@ b.kbd {
 
 		<!-- Live throttle slider — sends throt to ESC -->
 		<div class="throt-wrap" style="margin-top:0.8em">
-			<input type="range" min="0" max="2000" value="0" id="ecom-throt" oninput="setthrot(value)">
+			<div class="btn-row">
+				<input type="range" min="0" max="2000" value="0" id="ecom-throt" oninput="rampThrotTo(value)" style="flex:1;min-width:120px">
+				<button class="danger" data-lang="B06" onclick="stopThrot()"></button>
+			</div>
 			<div class="hint" data-lang="H00"></div>
 		</div>
 
@@ -800,6 +806,7 @@ const ecomKeys = [
 	{ key: 'duty_spup',  label: 'duty_spup',  type: 'num',    min:0, max:100,  hintKey: 'EC07' },
 	{ key: 'duty_ramp',  label: 'duty_ramp',  type: 'num',    min:0, max:100,  hintKey: 'EC08' },
 	{ key: 'duty_rate',  label: 'duty_rate',  type: 'num',    min:1, max:100,  hintKey: 'EC09' },
+	{ key: 'throt_ztc',  label: 'throt_ztc',  type: 'bool',   hintKey: 'EC12' },
 	{ key: 'analog_min', label: 'analog_min', type: 'num',    min:0, max:2000, hintKey: 'EC10' },
 	{ key: 'analog_max', label: 'analog_max', type: 'num',    min:0, max:2000, hintKey: 'EC11' },
 ];
@@ -1273,6 +1280,41 @@ function setthrot(val) {
 	// Keep the Settings-tab slider in sync when driven from eCom-tab slider
 	const t1 = document.getElementById('throt');
 	if (t1 && t1 !== document.activeElement) t1.value = val;
+}
+
+/* Throttle ramp — caps the deceleration rate so a fast drag (or the Stop
+   button) can't command a sudden large drop in duty cycle. A loaded motor
+   generates regenerative current when braked abruptly, and a power supply
+   that can't absorb it will overvoltage the link between the ESC and this
+   board — stepping the decrease down over time keeps the current in check.
+   Throttle increases are applied immediately; only decreases are ramped. */
+let throtShown = 0, throtRamp = null;
+const THROT_RAMP_STEP = 60;  // max commanded-value change per tick (slider range 0-2000)
+const THROT_RAMP_MS = 50;    // ms between ramp ticks
+
+function syncThrotSliders(val) {
+	['throt', 'ecom-throt'].forEach(id => {
+		const el = document.getElementById(id);
+		if (el && el !== document.activeElement) el.value = val;
+	});
+}
+function rampThrotTo(target) {
+	target = Number(target);
+	clearInterval(throtRamp);
+	if (target >= throtShown) {
+		throtShown = target;
+		setthrot(throtShown);
+		return;
+	}
+	throtRamp = setInterval(() => {
+		throtShown = Math.max(target, throtShown - THROT_RAMP_STEP);
+		setthrot(throtShown);
+		syncThrotSliders(throtShown);
+		if (throtShown <= target) clearInterval(throtRamp);
+	}, THROT_RAMP_MS);
+}
+function stopThrot() {
+	rampThrotTo(0);
 }
 function setvolume(val) {
 	document.getElementById('volume').value = val;

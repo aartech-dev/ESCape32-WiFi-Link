@@ -35,6 +35,7 @@
 	"B03": "Cancella",
 	"B04": "Imposta",
 	"B05": "Aggiorna",
+	"B06": "Stop",
 	"I00": "off",
 	"I01": "bootloader",
 	"I02": "firmware",
@@ -156,5 +157,6 @@
 	"EC08": "Potenza massima alla soglia di rampa kERPM (%). Controlla il tetto di potenza durante la rampa di accelerazione.",
 	"EC09": "Velocità di variazione del duty cycle (1–100). Valori bassi ammorbidiscono la risposta del gas e riducono gli urti meccanici.",
 	"EC10": "Punto di riferimento minimo ingresso analogico. Normalmente 0 per un range gas 0–1440.",
-	"EC11": "Punto di riferimento massimo ingresso analogico. Normalmente 1440 per il range completo 0–1440."
+	"EC11": "Punto di riferimento massimo ingresso analogico. Normalmente 1440 per il range completo 0–1440.",
+	"EC12": "Ruota libera a gas zero. Lascia il motore girare a ruota libera a gas zero invece di frenare attivamente — fortemente raccomandato per evitare che la corrente rigenerativa ritorni verso un alimentatore che non può assorbirla."
 }

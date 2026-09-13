@@ -35,6 +35,7 @@
 	"B03": "Effacer",
 	"B04": "Entrer",
 	"B05": "Mettre a jour",
+	"B06": "Arrêt",
 	"I00": "off",
 	"I01": "bootloader",
 	"I02": "firmware",
@@ -156,5 +157,6 @@
 	"EC08": "Puissance maximale au seuil de rampe kERPM (%). Contrôle le plafond de puissance pendant la rampe d'accélération.",
 	"EC09": "Taux de variation du rapport cyclique (1–100). Des valeurs basses adoucissent la réponse des gaz et réduisent les chocs mécaniques.",
 	"EC10": "Point de consigne minimum de l'entrée analogique. Normalement 0 pour une plage de gaz 0–1440.",
-	"EC11": "Point de consigne maximum de l'entrée analogique. Normalement 1440 pour la plage complète 0–1440."
+	"EC11": "Point de consigne maximum de l'entrée analogique. Normalement 1440 pour la plage complète 0–1440.",
+	"EC12": "Roue libre à gaz nul. Laisse le moteur tourner en roue libre à gaz nul au lieu de freiner activement — fortement recommandé pour éviter qu'un courant de régénération ne retourne vers une alimentation incapable de l'absorber."
 }

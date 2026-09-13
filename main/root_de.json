@@ -35,6 +35,7 @@
 	"B03": "Löschen",
 	"B04": "Aktivieren",
 	"B05": "Aktualisieren",
+	"B06": "Stopp",
 	"I00": "aus",
 	"I01": "bootloader",
 	"I02": "firmware",
@@ -156,5 +157,6 @@
 	"EC08": "Maximale Leistung an der kERPM-Rampe (%). Steuert die Leistungsobergrenze während der Beschleunigungsrampe.",
 	"EC09": "Tastgrad-Anstiegsrate (1–100). Kleinere Werte dämpfen das Gasansprechverhalten und reduzieren mechanische Stöße.",
 	"EC10": "Analogeingang Minimalsetpunkt. Normalerweise 0 für einen 0–1440-Gasbereich.",
-	"EC11": "Analogeingang Maximalsetpunkt. Normalerweise 1440 für den vollen 0–1440-Gasbereich."
+	"EC11": "Analogeingang Maximalsetpunkt. Normalerweise 1440 für den vollen 0–1440-Gasbereich.",
+	"EC12": "Leerlauf bei Nullgas. Lässt den Motor bei Nullgas auslaufen statt aktiv zu bremsen — dringend empfohlen, um Rückspeisestrom in ein Netzteil zu verhindern, das ihn nicht aufnehmen kann."
 }

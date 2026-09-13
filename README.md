@@ -99,7 +99,7 @@ card is required on the ESP32-S2.
 
 ### eCom — Essential motor parameters
 
-The 12 parameters most relevant to slot car operation, with a motor preset
+The 13 parameters most relevant to slot car operation, with a motor preset
 system backed by the Motor Database.
 
 | Parameter | Purpose |
@@ -112,11 +112,21 @@ system backed by the Motor Database.
 | `duty_spup` | Spin-up power limit — caps inrush current at startup |
 | `duty_ramp` | Power ceiling at the kERPM ramp threshold |
 | `duty_rate` | Duty cycle slew rate — lower = softer throttle response |
+| `throt_ztc` | Zero-throttle coasting — freewheel instead of active braking at zero throttle |
 | `analog_min` / `analog_max` | Analog input setpoints — normally 0 / 1440 |
 
 The live telemetry bar at the bottom shows eRPM, voltage, and current. When a
 motor with a known pole count is selected, mechanical RPM and Kv are also
 displayed and updated in real time as the throttle slider moves.
+
+**Stopping the motor:** the live throttle sliders (eCom and Settings tabs)
+include a **Stop** button next to them. Any decrease in throttle — whether
+from the Stop button or from dragging the slider down — is ramped down in
+small steps rather than applied as a single instant drop, to limit
+regenerative-braking current spikes from a loaded motor. Enabling
+`throt_ztc` addresses this at the source by having the ESC coast instead of
+actively brake at zero throttle, which is strongly recommended whenever the
+power supply cannot sink regenerative current.
 
 ### Motors — Motor database
 

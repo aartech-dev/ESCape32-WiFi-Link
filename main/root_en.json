@@ -35,6 +35,7 @@
 	"B03": "Clear",
 	"B04": "Set",
 	"B05": "Update",
+	"B06": "Stop",
 	"I00": "off",
 	"I01": "bootloader",
 	"I02": "firmware",
@@ -156,5 +157,6 @@
 	"EC08": "Maximum power at the kERPM ramp threshold (%). Controls the power ceiling during the acceleration ramp.",
 	"EC09": "Duty-cycle slew rate (1–100). Lower values soften the throttle response and reduce mechanical shock.",
 	"EC10": "Analog input minimum setpoint. Normally 0 for a 0–1440 throttle range.",
-	"EC11": "Analog input maximum setpoint. Normally 1440 for a full 0–1440 throttle range."
+	"EC11": "Analog input maximum setpoint. Normally 1440 for a full 0–1440 throttle range.",
+	"EC12": "Zero-throttle coasting. Freewheels the motor at zero throttle instead of active braking — strongly recommended to prevent regenerative current from feeding back into a power supply that can't absorb it."
 }
