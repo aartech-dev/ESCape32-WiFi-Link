@@ -89,6 +89,8 @@
 	"telem_mode": "(modalità telemetria)",
 	"telem_phid": "(ID fisico telemetria)",
 	"telem_poles": "(numero di poli motore)",
+	"telem_volt": "(calibrazione sensore di tensione)",
+	"telem_curr": "(calibrazione sensore di corrente)",
 	"prot_stall": "(ERPM protezione stallo)",
 	"prot_temp": "(soglia temperatura)",
 	"prot_sens": "(sensore temperatura)",

@@ -1,7 +1,6 @@
 # Console via USB CDC (ESP32-S2 native USB — no separate UART adapter needed)
 CONFIG_ESP_CONSOLE_UART_NUM=-1
 CONFIG_ESP_CONSOLE_USB_CDC=y
-CONFIG_ESP_CONSOLE_USB_CDC_RX_BUF_SIZE=64
 
 # HTTP client — disable HTTPS to save flash space
 CONFIG_ESP_HTTP_CLIENT_ENABLE_HTTPS=n

@@ -773,8 +773,8 @@ const params = {
 	throt_rev: ['100%', '75%', '50%', '25%'],
 	throt_ztc: false,
 	throt_cal: false,
-	input_mode: ['I08', 'I09', 'I10', 'iBUS', 'SBUS', 'CRSF'],
-	telem_mode: ['KISS', 'KISS auto', 'iBUS', 'S.Port', 'CRSF'],
+	input_mode: ['I08', 'I09', 'I10', 'iBUS', 'SBUS', 'CRSF', 'EXBUS', 'HoTT'],
+	telem_mode: ['KISS', 'KISS auto', 'iBUS', 'S.Port', 'CRSF', 'MSB', 'HoTT'],
 	prot_sens: ['I11', 'I12', 'I13'],
 	music: '',
 	bec: ['5.5V', '6.5V', '7.4V', '8.4V', '12V'],
@@ -783,7 +783,7 @@ const params = {
 
 const deps = [
 	{ arm: ['throt_set'], brushed: ['timing', 'sine_range', 'sine_power', 'freq_min', 'duty_spup', 'duty_ramp', 'duty_lock', 'throt_ztc', 'prot_stall'] },
-	{ damp: ['sine_range', 'sine_power', 'duty_lock'] },
+	{},
 ];
 
 /* ─────────────────────────────────────────────────────
@@ -972,7 +972,7 @@ function getfield(key, val) {
 		case 'boolean':
 			return `<input type="checkbox" id="field_${key}"${val != 0 ? ' checked' : ''} onchange="setparam('${key}', checked ? '1' : '0')">`;
 		case 'string':
-			return `<input type="text" maxlength="200" id="field_${key}" value="${val}" class="str" onchange="setparam('${key}', value)">`;
+			return `<input type="text" maxlength="255" id="field_${key}" value="${val}" class="str" onchange="setparam('${key}', value)">`;
 		case 'object': {
 			const res = [];
 			res.push(`<select id="field_${key}" onchange="setparam('${key}', value)">`);
