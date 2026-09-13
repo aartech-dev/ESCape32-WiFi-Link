@@ -21,7 +21,7 @@ aart_remora_programmer/
     ├── build_defs.h.in           ← CMake template → build_defs.h
     ├── Kconfig.projbuild         ← menuconfig: UART pins, LED pin
     ├── idf_component.yml         ← Component dependencies (mdns)
-    ├── root.html                 ← Single-page web UI (6 tabs, 11 languages)
+    ├── root.html                 ← Single-page web UI (6 tabs, 13 languages)
     ├── root_en.json              ← UI strings – English
     ├── root_de.json              ← UI strings – German
     ├── root_fr.json              ← UI strings – French
@@ -32,6 +32,8 @@ aart_remora_programmer/
     ├── root_fi.json              ← UI strings – Finnish
     ├── root_et.json              ← UI strings – Estonian
     ├── root_cs.json              ← UI strings – Czech
+    ├── root_pl.json              ← UI strings – Polish
+    ├── root_lt.json              ← UI strings – Lithuanian
     └── root_zh.json              ← UI strings – Chinese (Simplified)
 ```
 
@@ -171,7 +173,8 @@ The UI is fully internationalised. Switch language with the selector in the
 top-right corner. All strings — including eCom parameter hints, motor
 database field labels, and tab content — switch instantly without a page
 reload. Supported languages: **English, German, French, Italian, Spanish,
-Ukrainian, Latvian, Finnish, Estonian, Czech, Chinese (Simplified)**.
+Ukrainian, Latvian, Finnish, Estonian, Czech, Polish, Lithuanian, Chinese
+(Simplified)**.
 
 Language strings are embedded inline in the page at build time; no network
 request is needed to switch language, so it works even when the WebSocket
