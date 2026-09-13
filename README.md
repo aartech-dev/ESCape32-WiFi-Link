@@ -2,6 +2,8 @@
 
 Web-based wireless programmer for the [Remora™ electronic commutator (eCom)](https://aart.dev) — a brushless motor speed controller for slot car racing built around the ESCape32 firmware. Runs on an ESP32-S2 Wi-Fi module; any browser on any device connects without installing an app.
 
+**[⬇ Latest release](https://github.com/aartech-dev/ESCape32-WiFi-Link/releases/latest)** — download the prebuilt, ready-to-flash image.
+
 ---
 
 ## File Structure
@@ -66,6 +68,14 @@ python3 test_mock.py --start-server
 ```
 
 ### Flash to ESP32-S2
+
+**Prebuilt image (no ESP-IDF needed):** download the merged binary from the
+[latest release](https://github.com/aartech-dev/ESCape32-WiFi-Link/releases/latest)
+and flash it to **offset 0x0** with
+[Adafruit WebSerial ESPTool](https://adafruit.github.io/Adafruit_WebSerial_ESPTool)
+or `esptool --chip esp32s2 write-flash 0x0 ESCape32-WiFi-Link-ESP32-S2.bin`.
+
+**Build from source:**
 
 ```bash
 # Install ESP-IDF 5.x, then from the project root:
