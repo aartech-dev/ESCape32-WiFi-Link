@@ -69,3 +69,20 @@ jobs:
         with:
           files: dist/*/*.bin
           generate_release_notes: true
+          body: |
+            Dual-brand release, built and published automatically by [`.github/workflows/release.yml`](https://github.com/${{ github.repository }}/blob/master/.github/workflows/release.yml) from this tag.
+
+            ## Downloads
+
+            | Asset | Brand |
+            |---|---|
+            | `AART-Remora-Programmer-${{ github.ref_name }}-ESP32-S2.bin` | AART Remora™ Programmer |
+            | `NSR-Programmer-${{ github.ref_name }}-ESP32-S2.bin` | NSR Programmer |
+
+            Both are single merged images — flash at **offset 0x0** with [Adafruit WebSerial ESPTool](https://adafruit.github.io/Adafruit_WebSerial_ESPTool) or:
+
+            ```
+            esptool --chip esp32s2 write-flash 0x0 <file>.bin
+            ```
+
+            See the [wiki](https://github.com/${{ github.repository }}/wiki) for screenshots of every tab in both brands, and the [README](https://github.com/${{ github.repository }}#readme) for build-from-source instructions.
