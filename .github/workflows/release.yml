@@ -32,12 +32,14 @@ jobs:
 
       - name: Build ${{ matrix.brand }} firmware
         run: |
-          docker run --rm -v ${{ github.workspace }}:/project -w /project "$IDF_IMAGE" \
+          docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp \
+            -v ${{ github.workspace }}:/project -w /project "$IDF_IMAGE" \
             bash -c "idf.py -D BRAND=${{ matrix.brand }} set-target esp32s2 && idf.py build"
 
       - name: Merge into a single flashable image
         run: |
-          docker run --rm -v ${{ github.workspace }}:/project -w /project "$IDF_IMAGE" \
+          docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp \
+            -v ${{ github.workspace }}:/project -w /project "$IDF_IMAGE" \
             bash -c "cd build && python -m esptool --chip esp32s2 merge_bin -o merged.bin @flash_args"
 
       - name: Name release asset
