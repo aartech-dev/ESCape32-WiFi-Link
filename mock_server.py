@@ -31,7 +31,7 @@ import struct
 import sys
 import time
 from pathlib import Path
-from socketserver import TCPServer
+from socketserver import ThreadingMixIn, TCPServer
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Mock ESC state — edit to simulate different board configurations
@@ -329,6 +329,17 @@ def process_command(raw):
 
 
 # ──────────────────────────────────────────────────────────────────────────────
+# Server — threaded so an open WebSocket connection (held for the life of the
+# page, per client) doesn't block ordinary HTTP requests such as the
+# on-demand per-language fetches in root.html. Mirrors the real ESP32
+# firmware's httpd, which multiplexes all sockets via select() rather than
+# serving one connection at a time.
+# ──────────────────────────────────────────────────────────────────────────────
+class ThreadingTCPServer(ThreadingMixIn, TCPServer):
+    daemon_threads = True
+
+
+# ──────────────────────────────────────────────────────────────────────────────
 # HTTP handler
 # ──────────────────────────────────────────────────────────────────────────────
 class Handler(http.server.BaseHTTPRequestHandler):
@@ -386,11 +397,11 @@ class Handler(http.server.BaseHTTPRequestHandler):
             ) or '<option value="en">EN</option>'
             text = text.replace("@LANG_OPTS@", opts)
         if "@LANG_DATA@" in text:
-            import json as _json
-            lang_obj = "{" + ",".join(
-                '"{}": {}'.format(lang, raw)
-                for lang, raw in sorted(LANG_FILES.items())
-            ) + "}"
+            # Mirror main/CMakeLists.txt: only English ships inlined for an
+            # instant first paint. Every other language is fetched on demand
+            # from GET /?<lang> — see setlang() in root.html.
+            en_raw = LANG_FILES.get("en", "{}")
+            lang_obj = '{{"en": {}}}'.format(en_raw)
             text = text.replace("@LANG_DATA@", lang_obj)
         text = text.replace("@PROJECT_VER@", "mock-dev")
         return text.encode()
@@ -466,8 +477,8 @@ def main():
 
     load_lang_files(HTML_PATH.parent)
 
-    TCPServer.allow_reuse_address = True
-    server = TCPServer(("", args.port), Handler)
+    ThreadingTCPServer.allow_reuse_address = True
+    server = ThreadingTCPServer(("", args.port), Handler)
 
     url = "http://localhost:{}".format(args.port)
     bar = "=" * 56

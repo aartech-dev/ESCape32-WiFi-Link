@@ -175,14 +175,24 @@ and beacon controls.
 
 The UI is fully internationalised. Switch language with the selector in the
 top-right corner. All strings — including eCom parameter hints, motor
-database field labels, and tab content — switch instantly without a page
-reload. Supported languages: **English, German, French, Italian, Spanish,
-Portuguese (Brazilian), Dutch, Swedish, Danish, Ukrainian, Latvian,
-Finnish, Estonian, Czech, Polish, Lithuanian, Chinese (Simplified)**.
+database field labels, and tab content — switch instantly. Supported
+languages: **English, German, French, Italian, Spanish, Portuguese
+(Brazilian), Dutch, Swedish, Danish, Ukrainian, Latvian, Finnish, Estonian,
+Czech, Polish, Lithuanian, Chinese (Simplified)**.
 
-Language strings are embedded inline in the page at build time; no network
-request is needed to switch language, so it works even when the WebSocket
-connection is open.
+Only English is embedded inline in the page at build time, for an instant
+first paint with no network round-trip. Every other language is fetched on
+demand from `GET /?<lang>` the first time it's selected, then cached in
+memory for the rest of the session — see `setlang()` in `root.html`. This
+is why each `root_XX.json` is still individually gzipped and embedded in
+the firmware image even though only English ships inline in `root.html`
+itself; at 17+ languages, inlining all of them added tens of KB to the
+compressed image for translations most sessions never touch.
+
+The on-demand fetch runs safely alongside an open WebSocket connection:
+ESP-IDF's httpd multiplexes all sockets with `select()` rather than
+blocking on one connection at a time, so a quick static-file GET
+interleaves with WS traffic without stalling either one.
 
 ---
 

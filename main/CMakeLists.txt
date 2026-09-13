@@ -5,25 +5,15 @@ string(REGEX REPLACE "([a-z][a-z]):([^;]+)" "<option value=\"\\1\">\\2</option>"
 list(JOIN LANG_LIST " " LANG_LIST)
 list(JOIN LANG_OPTS "" LANG_OPTS)
 
-# Build inline JSON object for all language files: {"en":{...},"de":{...},...}
-# This is substituted into @LANG_DATA@ in root.html so setlang() never needs
-# a network fetch (which would block on the single-threaded HTTP server).
-set(LANG_DATA "{")
-set(_first TRUE)
-foreach(pair ${lang_map})
-    string(REGEX MATCH "^([a-z][a-z]):" _ "${pair}")
-    set(lang "${CMAKE_MATCH_1}")
-    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/root_${lang}.json")
-        file(READ "${CMAKE_CURRENT_SOURCE_DIR}/root_${lang}.json" _json_raw)
-        string(STRIP "${_json_raw}" _json_raw)
-        if(NOT _first)
-            string(APPEND LANG_DATA ",")
-        endif()
-        string(APPEND LANG_DATA "\"${lang}\":${_json_raw}")
-        set(_first FALSE)
-    endif()
-endforeach()
-string(APPEND LANG_DATA "}")
+# Inline only English into @LANG_DATA@ in root.html, for an instant first
+# paint with no network round-trip. Every other language (including a
+# non-English browser default) is fetched on demand from GET /?<lang> —
+# see setlang() in root.html. Embedding all of them here stopped scaling
+# once the language count grew: at 17 languages it was adding ~37KB to the
+# compressed image for translations most sessions never touch.
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/root_en.json" _en_json_raw)
+string(STRIP "${_en_json_raw}" _en_json_raw)
+set(LANG_DATA "{\"en\":${_en_json_raw}}")
 
 configure_file(build_defs.h.in build_defs.h @ONLY)
 target_include_directories(${COMPONENT_TARGET} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})

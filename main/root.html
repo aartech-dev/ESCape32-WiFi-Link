@@ -827,11 +827,20 @@ function showToast(msg, type='') {
    Language
 ───────────────────────────────────────────────────── */
 let strs = {};
+const langCache = {};  // languages fetched this session, keyed by code
 async function setlang(lang) {
-	// Use embedded langData (injected at serve time) — no network fetch needed
-	const d = (typeof langData !== 'undefined') && langData[lang];
+	// English is embedded at build time for an instant first paint; every
+	// other language is fetched on demand from GET /?<lang> and cached
+	// in memory so switching back to it later needs no second round-trip.
+	let d = langCache[lang] || ((typeof langData !== 'undefined') && langData[lang]);
+	if (!d) {
+		try {
+			const res = await fetch(`?${lang}`);
+			if (res.ok) d = await res.json();
+		} catch (e) { /* offline preview, or device unreachable */ }
+	}
 	if (d) {
-		strs = d;
+		langCache[lang] = strs = d;
 	} else if (lang !== 'en') {
 		return setlang('en');  // fallback
 	} else {
