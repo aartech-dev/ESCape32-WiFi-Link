@@ -2,7 +2,7 @@
 
 Web-based wireless programmer for the [Remora™ electronic commutator (eCom)](https://aart.dev) — a brushless motor speed controller for slot car racing built around the ESCape32 firmware. Runs on an ESP32-S2 Wi-Fi module; any browser on any device connects without installing an app.
 
-**[⬇ Latest release](https://github.com/aartech-dev/ESCape32-WiFi-Link/releases/latest)** — download the prebuilt, ready-to-flash image.
+**[⬇ Latest release](https://github.com/aartech-dev/ESCape32-WiFi-Link/releases/latest)** — download the prebuilt, ready-to-flash image. **[📖 Wiki](https://github.com/aartech-dev/ESCape32-WiFi-Link/wiki)** — screenshots of every tab, for both the AART and NSR brands.
 
 ---
 
