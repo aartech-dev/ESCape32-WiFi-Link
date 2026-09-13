@@ -111,6 +111,7 @@
 	"E04": "Load",
 	"E05": "Essential eCom Parameters",
 	"E06": "● Unsaved changes — press Save to commit to ESC, or Reset to discard.",
+	"E07": "Save",
 	"W00": "Access Point Identity",
 	"W01": "Password",
 	"W02": "Changes take effect after the device is power-cycled.",
