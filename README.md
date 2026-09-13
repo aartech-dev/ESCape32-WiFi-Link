@@ -93,11 +93,11 @@ idf.py build flash monitor
 
 ### Building a different brand
 
-This same source tree also builds the **NSR Remora 3 Programmer** — a
-single-purpose variant for NSR's Remora 3 ESC only, with NSR's own color
-theme (white/red/black), a system-standard font instead of Trebuchet MS,
-an NSR-only built-in motor catalog, and no Settings/Music tabs. Select it
-with the `BRAND` CMake variable (default: `aart`):
+This same source tree also builds the **NSR Programmer** — a single-purpose
+variant for NSR's ESC only, with NSR's own color theme (white/red/black), a
+system-standard font instead of Trebuchet MS, an NSR-only built-in motor
+catalog, and no Settings/Music tabs. Select it with the `BRAND` CMake
+variable (default: `aart`):
 
 ```bash
 idf.py set-target esp32s2

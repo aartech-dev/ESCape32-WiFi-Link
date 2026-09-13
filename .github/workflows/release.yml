@@ -24,7 +24,7 @@ jobs:
           - brand: aart
             asset_name: AART-Remora-Programmer
           - brand: nsr
-            asset_name: NSR-Remora3-Programmer
+            asset_name: NSR-Programmer
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

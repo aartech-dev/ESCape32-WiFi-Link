@@ -129,10 +129,10 @@ BRAND_VARS = {
     "nsr": {
         "BRAND":            "nsr",
         "BRAND_LOGO":       "NSR",
-        "BRAND_TITLE":      "NSR Remora 3 Programmer",
-        "BRAND_SUBTITLE":   "Remora 3 Programmer",
-        "BRAND_FOOTER_HTML": "NSR Remora 3 Programmer",
-        "BRAND_SSID": "NSR-Remora3",
+        "BRAND_TITLE":      "NSR Programmer",
+        "BRAND_SUBTITLE":   "Programmer",
+        "BRAND_FOOTER_HTML": "NSR Programmer",
+        "BRAND_SSID": "NSR-Programmer",
     },
 }
 BRAND = "aart"  # overridden by --brand in main()

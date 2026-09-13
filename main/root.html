@@ -1532,7 +1532,7 @@ const BUILTIN_MOTORS_AART = [
     params:{ damp:1,revdir:0,timing:28,freq_min:96,freq_max:96,duty_min:100,duty_max:100,duty_spup:70,duty_ramp:90,duty_rate:80,analog_min:0,analog_max:1440 }},
 ];
 
-// NSR Remora 3 tuning — both profiles apply to either the 2,000Kv or the
+// NSR tuning — both profiles apply to either the 2,000Kv or the
 // 6,000Kv 12-pole motor; duty_rate is what differentiates them (measured:
 // duty_rate 20 → ~28A peak, 47,620rpm @ 100ms; duty_rate 5 → ~12A peak,
 // 20,000rpm @ 100ms — roughly half the acceleration and peak current).
@@ -1905,7 +1905,7 @@ function refreshSavedPresets() {
 /* ─────────────────────────────────────────────────────
    Init
 ───────────────────────────────────────────────────── */
-// NSR is a single-purpose Remora 3 programmer — the full parameter table
+// NSR is a single-purpose programmer — the full parameter table
 // (Settings) and startup-melody editor (Music) aren't part of that product.
 function removeUnbrandedTabs() {
 	if (BRAND !== 'nsr') return;
