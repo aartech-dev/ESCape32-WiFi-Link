@@ -38,7 +38,7 @@ jobs:
       - name: Merge into a single flashable image
         run: |
           docker run --rm -v ${{ github.workspace }}:/project -w /project "$IDF_IMAGE" \
-            bash -c "cd build && python -m esptool --chip esp32s2 merge-bin -o merged.bin @flash_args"
+            bash -c "cd build && python -m esptool --chip esp32s2 merge_bin -o merged.bin @flash_args"
 
       - name: Name release asset
         id: asset
