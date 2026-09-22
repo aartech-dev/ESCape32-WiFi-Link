@@ -23,6 +23,8 @@
 #include "esp_http_server.h"
 #include "driver/gpio.h"
 #include "driver/uart.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 #include "lwip/sockets.h"
 #include "mdns.h"
 #include "build_defs.h"
@@ -229,10 +231,34 @@ static esp_err_t preset_load(const char *slug, char *out, size_t outsz) {
 
 /* ── HTTP handlers ──────────────────────────────────────────────────── */
 
+/*
+ * Served for every unrecognized path — which is what the OS's captive-portal
+ * probe requests (hotspot-detect.html, generate_204, connecttest.txt, ...)
+ * hit, and therefore what iOS/Android show inside their restricted
+ * captive-portal popup browser. That popup can't run the full app (it blocks
+ * WebSocket/localStorage/IndexedDB and silently closes back to Wi-Fi
+ * settings when the app touches them), so instead of redirecting into it,
+ * serve a static landing page whose target="_blank" link is what actually
+ * escapes the popup into the real browser.
+ */
+static const char landing_html[] =
+	"<!DOCTYPE html><html><head><meta charset=utf-8>"
+	"<meta name=viewport content=\"width=device-width,initial-scale=1\">"
+	"<title>" SSID "</title>"
+	"<style>"
+	"body{font-family:-apple-system,system-ui,sans-serif;text-align:center;"
+	"padding:3em 1.5em;background:#111;color:#eee}"
+	"a{display:inline-block;margin-top:1.5em;padding:0.9em 1.8em;"
+	"background:#2a7;color:#fff;text-decoration:none;border-radius:8px;font-weight:600}"
+	"</style></head><body>"
+	"<h1>" SSID "</h1>"
+	"<p>Tap below to open the configurator in your browser.</p>"
+	"<a href=\"/\" target=\"_blank\">Open Configurator</a>"
+	"</body></html>";
+
 static esp_err_t http404handler(httpd_req_t *req, httpd_err_code_t err) {
-	httpd_resp_set_status(req, "302 Temporary Redirect");
-	httpd_resp_set_hdr(req, "Location", "/");
-	httpd_resp_send(req, "Redirect", 8);
+	httpd_resp_set_type(req, "text/html");
+	httpd_resp_send(req, landing_html, sizeof landing_html - 1);
 	return 0;
 }
 
@@ -606,7 +632,8 @@ void app_main(void) {
 		int len1 = recvfrom(fd, buf, sizeof buf - 1, 0, (struct sockaddr *)&sa, &sl);
 		if (len1 == -1) {
 			ESP_LOGE("dns", "recvfrom() failed: %s", strerror(errno));
-			break;
+			vTaskDelay(pdMS_TO_TICKS(100)); /* avoid a busy-spin if the error is persistent */
+			continue;
 		}
 		int len2 = processdns(buf, len1);
 		if (!len2) {
