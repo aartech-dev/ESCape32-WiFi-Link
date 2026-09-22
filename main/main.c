@@ -238,8 +238,12 @@ static esp_err_t preset_load(const char *slug, char *out, size_t outsz) {
  * captive-portal popup browser. That popup can't run the full app (it blocks
  * WebSocket/localStorage/IndexedDB and silently closes back to Wi-Fi
  * settings when the app touches them), so instead of redirecting into it,
- * serve a static landing page whose target="_blank" link is what actually
- * escapes the popup into the real browser.
+ * serve a static landing page with a link that escapes the popup into the
+ * real browser. That link must be a plain, same-window navigation — a
+ * target="_blank" tap only opens a second tab still inside the same
+ * sandboxed popup (page loads fine over HTTP, but WebSocket/localStorage
+ * stay blocked); an ordinary top-level link tap is what iOS's Captive
+ * Network Assistant hands off to full Safari.
  */
 static const char landing_html[] =
 	"<!DOCTYPE html><html><head><meta charset=utf-8>"
@@ -253,7 +257,7 @@ static const char landing_html[] =
 	"</style></head><body>"
 	"<h1>" SSID "</h1>"
 	"<p>Tap below to open the configurator in your browser.</p>"
-	"<a href=\"/\" target=\"_blank\">Open Configurator</a>"
+	"<a href=\"/\">Open Configurator</a>"
 	"</body></html>";
 
 static esp_err_t http404handler(httpd_req_t *req, httpd_err_code_t err) {
