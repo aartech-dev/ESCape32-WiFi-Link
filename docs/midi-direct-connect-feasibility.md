@@ -1,8 +1,8 @@
-# Direct-Connect Feasibility: MIDI-over-USB (+ BLE Alternative)
+# Direct-Connect Feasibility: MIDI-over-USB, Plain UART, or BLE
 
 _Design feasibility scoping — 2026-09-23_
 
-Scoping a way to talk to the eCom directly from a phone that drops the ESP32-S2 WiFi-Link board and its captive-portal complexity entirely — MIDI-over-USB as the primary, wired path; BLE kept as a documented wireless alternative.
+Scoping a way to talk to the eCom directly from a phone that drops the ESP32-S2 WiFi-Link board and its captive-portal complexity entirely. MIDI-over-USB is the primary, wired path covering iOS + Android + laptop, chosen specifically because MIDI is one of the few USB device classes iOS exempts from its MFi accessory certification; a plain-UART variant covers Android + laptop only, with no MIDI complexity and no native app on either, if iOS support isn't required. BLE is kept as a documented wireless alternative.
 
 ## Recommendation
 
@@ -14,6 +14,18 @@ Recommended scope, in order:
 - Android can likely skip a native app entirely via the Web MIDI API (see App Requirements); iOS still needs one via CoreMIDI, but the app is thin — mostly `root.html` reused in a WebView.
 - Keep the existing WiFi-Link product exactly as it is today for users who want the current browser-based flow — this is an additional connection option, not a replacement for it.
 - Treat BLE as a fallback worth documenting (see Alternative: Wireless via BLE) if a wireless — not wired — direct connection turns out to matter more than simplicity.
+
+## Even Simpler, If iOS Is Out of Scope: Plain UART-over-USB
+
+Everything above exists *because of iOS*. If the accessory only ever needs to work on Android and laptops, drop MIDI entirely and expose a plain USB-CDC-ACM virtual serial port — the most ordinary USB device class there is, and one the ESP32-S2 already implements today for its own debug console (`CONFIG_ESP_CONSOLE_USB_CDC=y`, `sdkconfig.defaults`). No 7-bit SysEx packing, no manufacturer ID, no MIDI framing — the existing 8-bit command protocol goes over the wire completely unmodified.
+
+**And critically: no native app on either platform.**
+
+- **Laptop — Web Serial API.** Mature, well-supported in desktop Chrome and Edge since Chrome 89. `root.html` runs in an ordinary desktop browser tab; `connect()` swaps to `navigator.serial.requestPort()` plus its read/write streams in place of a WebSocket. This is arguably a *better* fit for the product's "any browser, zero install" pitch than anything else in this document — it's the same pitch, just wired instead of WiFi.
+- **Android — WebUSB, not Web Serial.** Verified via search: WebUSB has been supported in Chrome for Android since Chrome 61 — mature and long-standing. Web Serial's own Android support is much newer and, as of this writing, geared toward Bluetooth RFCOMM rather than wired USB, so WebUSB is the correct API here, not Web Serial. It's lower-level than Web Serial (the page opens the device, claims the interface, and issues bulk transfers to the CDC endpoints directly rather than using a simple port abstraction) — more JS than the laptop path, but well-trodden and framework-free.
+- **One real constraint:** both APIs require the actual Chrome browser app — confirmed via search that Android's WebView has neither Web Serial nor WebUSB. That's not a problem here (the whole point of this variant is no app, no WebView), but it does mean this specific simplification can't be wrapped into a native shell later without losing it.
+
+This is the cheapest, lowest-risk path in this document, precisely because it's the only one not fighting iOS's platform restrictions. The tradeoff is explicit and total: iOS phones don't get a direct-connect option at all under this variant, full stop — they'd fall back to the existing WiFi-Link product.
 
 ## Hardware — Obviating the ESP32-S2
 
@@ -27,7 +39,7 @@ Whichever chip, the requirement is the same short list: one native USB periphera
 
 ## USB-MIDI Protocol Design
 
-Apple's `CoreMIDI` and Android's `android.media.midi` both talk to generic USB-MIDI class-compliant devices with **no MFi certification required** — unusual, since MFi normally gates everything else on Lightning/USB-C. Some DIY hardware projects tunnel arbitrary data through MIDI SysEx messages specifically to use this loophole; that's the mechanism here.
+**This section exists because of one specific iOS wall.** The plain USB-CDC-ACM serial port from the previous section — the obvious, simplest choice, and Android/laptop's whole story — is exactly what iOS blocks. Apple's External Accessory framework requires MFi certification for essentially all third-party USB accessory communication, and generic serial is not on the short list of classes exempted from that. MIDI is one of the few that *is* exempted: Apple's `CoreMIDI` and Android's `android.media.midi` both talk to generic USB-MIDI class-compliant devices with **no MFi certification required**. That's the entire reason this document reaches for a music-transport class to carry an ESC command protocol — not because MIDI is a natural fit, but because it's one of the narrow gaps in Apple's accessory gatekeeping that a small hobbyist project can actually walk through. Some DIY hardware projects tunnel arbitrary data through MIDI SysEx messages specifically to use this loophole; that's the mechanism here.
 
 **SysEx tunneling:** a MIDI System Exclusive message is `F0 <manufacturer ID> <payload> F7`. MIDI data bytes are constrained to 7 bits (0x00–0x7F), so the existing 8-bit command/response protocol (`checkcmd()`, `recvdata`/`senddata` framing in `main/main.c`) needs a 7-bit packing/unpacking layer wrapped around it — a well-understood technique (~12.5% size overhead), genuinely new code but bounded complexity. Use MIDI's reserved non-commercial/educational manufacturer ID (`0x7D`) to skip MMA registration entirely.
 
@@ -98,17 +110,20 @@ Worth prototyping only if the USB-MIDI bridge turns out to be a hard no for some
 
 | Component | Effort | Risk |
 | --- | --- | --- |
+| *Simplest:* plain USB-CDC-ACM bridge (Android + laptop only, no iOS) | Low — same USB class the ESP32-S2's console already uses, protocol unmodified | Low — no MFi wall to design around, but leaves iOS with no direct-connect option at all |
+| *Simplest:* Web Serial (laptop) / WebUSB (Android) integration in `root.html` | Low–Medium — no native app either platform; WebUSB needs lower-level JS than a port abstraction | Low — both APIs mature (Web Serial desktop since Chrome 89, WebUSB Android since Chrome 61) |
 | Bridge hardware (RP2040/STM32/spare ESP32-S2) | Low–Medium — small dedicated board, no radio needed | Low — no chip change forced, well-trodden parts either way |
-| Firmware: USB-MIDI device + 7-bit packing | Medium — new TinyUSB descriptor + packing layer, reuses existing `checkcmd()` dispatch | Low–Medium — well-understood technique |
+| Firmware: USB-MIDI device + 7-bit packing (needed only for iOS coverage) | Medium — new TinyUSB descriptor + packing layer, reuses existing `checkcmd()` dispatch | Low–Medium — well-understood technique |
 | Firmware: OTA-over-USB-MIDI chunking | Medium — new chunk/ACK logic, but USB's hardware-level retry does some of the reliability work for free | Medium — a failed update can brick the ESC, but lower risk than the BLE equivalent |
-| App: Android via Web MIDI (no native app) | Low — just a transport shim in `root.html`'s `connect()` | Low |
-| App: iOS native shell (CoreMIDI + WebView reuse) | Medium — new app, but `root.html` carries over almost entirely | Medium — App Store review, ongoing maintenance |
+| App: Android via Web MIDI (MIDI path, no native app) | Low — just a transport shim in `root.html`'s `connect()` | Low |
+| App: iOS native shell (CoreMIDI + WebView reuse, MIDI path only) | Medium — new app, but `root.html` carries over almost entirely | Medium — App Store review, ongoing maintenance |
 | *Alternative:* new PCB + BLE chip (C3/S3) | Medium — board respin, BOM change | Low — well-trodden chips, only needed if BLE is pursued |
 | *Alternative:* BLE GATT server + OTA-over-BLE reliability | High — new transport-agnostic firmware split, ACK/retry layer with no hardware retry to lean on | Medium–High — a failed update can brick the ESC |
 
 ### Open questions
 
+- **Does iOS need to be covered at all for this direct-connect accessory?** If not, skip MIDI entirely and ship the plain USB-CDC-ACM + Web Serial/WebUSB variant — it's simpler, lower-risk, and needs no native app on either targeted platform. This is the highest-leverage open question in this document; it decides whether the MIDI/SysEx/CoreMIDI machinery is needed at all.
 - Is this a genuinely separate accessory (new small board, new firmware, sold or given alongside the existing WiFi-Link product), or should it somehow share manufacturing/tooling with it? Affects the RP2040-vs-STM32-vs-spare-ESP32-S2 hardware choice.
-- Is Android-without-a-native-app (Web MIDI) an acceptable v1, with iOS's native app following once the bridge hardware is validated — or do both need to land together?
-- Does the existing ESC UART protocol (`checkcmd()` and friends) need any changes to work cleanly under 7-bit SysEx packing, or does the packing layer stay entirely transparent to it?
+- If iOS coverage IS required: is Android-without-a-native-app (Web MIDI) an acceptable v1, with iOS's native app following once the bridge hardware is validated — or do both need to land together?
+- Does the existing ESC UART protocol (`checkcmd()` and friends) need any changes to work cleanly under 7-bit SysEx packing, or does the packing layer stay entirely transparent to it? (Moot if the plain-UART variant is chosen — that path needs no packing layer at all.)
 - Unrelated but still unresolved from the earlier wiring discussion: does the existing WiFi-Link↔eCom link use true differential RS-485 or single-wire TTL? Doesn't block this scoping, but still worth settling — the same UART leg is reused here unchanged.
