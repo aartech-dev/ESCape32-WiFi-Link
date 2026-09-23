@@ -36,6 +36,7 @@
 	"B04": "Set",
 	"B05": "Update",
 	"B06": "Stop",
+	"B07": "Start",
 	"I00": "off",
 	"I01": "bootloader",
 	"I02": "firmware",

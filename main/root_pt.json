@@ -36,6 +36,7 @@
 	"B04": "Definir",
 	"B05": "Atualizar",
 	"B06": "Parar",
+	"B07": "Iniciar",
 	"I00": "desligado",
 	"I01": "bootloader",
 	"I02": "firmware",

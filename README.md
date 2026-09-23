@@ -91,6 +91,13 @@ idf.py build flash monitor
 #              or:        http://escape32.local
 ```
 
+Joining the AP normally pops up your phone's captive-portal sign-in browser
+automatically. That popup is sandboxed by the OS and can't run the full app
+(no WebSocket, no local storage), so it shows a minimal landing page instead
+— tap **Open Configurator** there to launch the real app in your actual
+browser. See the [wiki](https://github.com/aartech-dev/ESCape32-WiFi-Link/wiki)
+for a screenshot of this landing page.
+
 ### Building a different brand
 
 This same source tree also builds the **NSR Programmer** — a single-purpose
@@ -161,12 +168,15 @@ The live telemetry bar at the bottom shows eRPM, voltage, and current. When a
 motor with a known pole count is selected, mechanical RPM and Kv are also
 displayed and updated in real time as the throttle slider moves.
 
-**Stopping the motor:** the live throttle sliders (eCom and Settings tabs)
-include a **Stop** button next to them. Any decrease in throttle — whether
+**Start/Stop:** the live throttle sliders (eCom and Settings tabs) are
+flanked by a **Stop** button at the zero end and a **Start** button at the
+full-throttle end, so both ends of the range are one tap away without
+having to land the slider precisely. Any decrease in throttle — whether
 from the Stop button or from dragging the slider down — is ramped down in
 small steps rather than applied as a single instant drop, to limit
-regenerative-braking current spikes from a loaded motor. Enabling
-`throt_ztc` addresses this at the source by having the ESC coast instead of
+regenerative-braking current spikes from a loaded motor. Increases (Start
+included) are applied immediately. Enabling `throt_ztc` addresses
+regenerative current at the source by having the ESC coast instead of
 actively brake at zero throttle, which is strongly recommended whenever the
 power supply cannot sink regenerative current.
 
@@ -204,7 +214,11 @@ and beacon controls.
 
 ## Language Support
 
-The UI is fully internationalised. Switch language with the selector in the
+The UI is fully internationalised. On first load it auto-detects the
+browser's own language (`navigator.language`) and switches to it if it's
+one of the supported languages, falling back to English otherwise; your
+choice is then remembered (`localStorage`) for future visits regardless of
+browser locale. Switch language manually anytime with the selector in the
 top-right corner. All strings — including eCom parameter hints, motor
 database field labels, and tab content — switch instantly. Supported
 languages: **English, German, French, Italian, Spanish, Portuguese

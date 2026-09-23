@@ -544,8 +544,9 @@ b.kbd {
 		<div id="info"></div>
 		<div class="throt-wrap">
 			<div class="btn-row">
-				<input type="range" min="0" max="2000" value="0" id="throt" oninput="rampThrotTo(value)" style="flex:1;min-width:120px">
 				<button class="danger" data-lang="B06" onclick="stopThrot()"></button>
+				<input type="range" min="0" max="2000" value="0" id="throt" oninput="rampThrotTo(value)" style="flex:1;min-width:120px">
+				<button data-lang="B07" onclick="startThrot()"></button>
 			</div>
 			<div class="hint" data-lang="H00"></div>
 		</div>
@@ -670,8 +671,9 @@ b.kbd {
 		<!-- Live throttle slider — sends throt to ESC -->
 		<div class="throt-wrap" style="margin-top:0.8em">
 			<div class="btn-row">
-				<input type="range" min="0" max="2000" value="0" id="ecom-throt" oninput="rampThrotTo(value)" style="flex:1;min-width:120px">
 				<button class="danger" data-lang="B06" onclick="stopThrot()"></button>
+				<input type="range" min="0" max="2000" value="0" id="ecom-throt" oninput="rampThrotTo(value)" style="flex:1;min-width:120px">
+				<button data-lang="B07" onclick="startThrot()"></button>
 			</div>
 			<div class="hint" data-lang="H00"></div>
 		</div>
@@ -1103,8 +1105,7 @@ function buildEcomGrid() {
 function ecomMarkDirty(key, val) {
 	ecomPending[key] = val;
 	ecomDirty = true;
-	const banner = document.getElementById('ecom-pending-banner');
-	if (banner) banner.style.display = 'block';
+	ecomUpdateBanner();
 }
 
 function saveEcom() {
@@ -1117,12 +1118,14 @@ function saveEcom() {
 	// Clear dirty state
 	ecomDirty = false;
 	for (const k in ecomPending) delete ecomPending[k];
+	ecomUpdateBanner();
 	// Refresh display from ESC
 	send('show\n');
 }
 function resetEcom() {
 	ecomDirty = false;
 	for (const k in ecomPending) delete ecomPending[k];
+	ecomUpdateBanner();
 	send('reset\n');
 	send('show\n');
 }
@@ -1350,6 +1353,7 @@ function rampThrotTo(target) {
 	if (target >= throtShown) {
 		throtShown = target;
 		setthrot(throtShown);
+		syncThrotSliders(throtShown);
 		return;
 	}
 	throtRamp = setInterval(() => {
@@ -1361,6 +1365,9 @@ function rampThrotTo(target) {
 }
 function stopThrot() {
 	rampThrotTo(0);
+}
+function startThrot() {
+	rampThrotTo(2000);
 }
 function setvolume(val) {
 	document.getElementById('volume').value = val;
