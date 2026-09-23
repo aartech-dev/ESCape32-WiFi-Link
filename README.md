@@ -17,6 +17,9 @@ aart_remora_programmer/
 ├── mock_server.py                ← Python desktop simulator (no ESP32 needed)
 ├── test_mock.py                  ← Automated Python test suite
 │
+├── docs/                         ← Design/feasibility docs (not user-facing)
+│   └── ble-direct-connect-feasibility.md
+│
 └── main/                         ← ESP-IDF component (application source)
     ├── CMakeLists.txt            ← Embeds & gzips root*.* at build time
     ├── main.c                    ← HTTP server, WebSocket bridge, DNS, NVS
