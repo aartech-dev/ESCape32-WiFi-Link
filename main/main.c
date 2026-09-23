@@ -605,6 +605,11 @@ void app_main(void) {
 	httpd_config_t hcfg = HTTPD_DEFAULT_CONFIG();
 	hcfg.max_open_sockets = CONFIG_LWIP_MAX_SOCKETS - 3;
 	hcfg.lru_purge_enable = true;
+	/* Default stack (4096) is exactly the size of the largest single local
+	   buffer used by our handlers (wshandler's WS-text buf[4096], presethandler's
+	   json[4096]) — leaving zero room for the rest of each call's stack frames.
+	   That overflows the worker task's stack on essentially every request. */
+	hcfg.stack_size = 10240;
 	ESP_ERROR_CHECK(httpd_start(&server, &hcfg));
 	ESP_ERROR_CHECK(httpd_register_err_handler(server, HTTPD_404_NOT_FOUND, http404handler));
 	addhandler("/",         roothandler);
