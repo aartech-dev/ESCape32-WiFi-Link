@@ -234,35 +234,20 @@ static esp_err_t preset_load(const char *slug, char *out, size_t outsz) {
 /*
  * Served for every unrecognized path — which is what the OS's captive-portal
  * probe requests (hotspot-detect.html, generate_204, connecttest.txt, ...)
- * hit, and therefore what iOS/Android show inside their restricted
- * captive-portal popup browser. That popup can't run the full app (it blocks
- * WebSocket/localStorage/IndexedDB and silently closes back to Wi-Fi
- * settings when the app touches them), so instead of redirecting into it,
- * serve a static landing page with a link that escapes the popup into the
- * real browser. That link must be a plain, same-window navigation — a
- * target="_blank" tap only opens a second tab still inside the same
- * sandboxed popup (page loads fine over HTTP, but WebSocket/localStorage
- * stay blocked); an ordinary top-level link tap is what iOS's Captive
- * Network Assistant hands off to full Safari.
+ * hit, prompting the OS to open its captive-portal popup browser loading
+ * this same redirect target. A previous version of this handler served a
+ * static "Open Configurator" landing page instead, on the theory that the
+ * popup couldn't run the full app (WebSocket/localStorage). That was never
+ * actually confirmed — every symptom that theory was built on turned out to
+ * be fully explained by a since-fixed httpd worker-task stack overflow (see
+ * hcfg.stack_size below), and upstream's plain redirect is known to work.
+ * Simple redirect restored; revisit only if real-hardware testing on the
+ * fixed firmware shows a genuine case of the popup not running the app.
  */
-static const char landing_html[] =
-	"<!DOCTYPE html><html><head><meta charset=utf-8>"
-	"<meta name=viewport content=\"width=device-width,initial-scale=1\">"
-	"<title>" SSID "</title>"
-	"<style>"
-	"body{font-family:-apple-system,system-ui,sans-serif;text-align:center;"
-	"padding:3em 1.5em;background:#111;color:#eee}"
-	"a{display:inline-block;margin-top:1.5em;padding:0.9em 1.8em;"
-	"background:#2a7;color:#fff;text-decoration:none;border-radius:8px;font-weight:600}"
-	"</style></head><body>"
-	"<h1>" SSID "</h1>"
-	"<p>Tap below to open the configurator in your browser.</p>"
-	"<a href=\"/\">Open Configurator</a>"
-	"</body></html>";
-
 static esp_err_t http404handler(httpd_req_t *req, httpd_err_code_t err) {
-	httpd_resp_set_type(req, "text/html");
-	httpd_resp_send(req, landing_html, sizeof landing_html - 1);
+	httpd_resp_set_status(req, "302 Found");
+	httpd_resp_set_hdr(req, "Location", "/");
+	httpd_resp_send(req, "Redirect", 8);
 	return 0;
 }
 

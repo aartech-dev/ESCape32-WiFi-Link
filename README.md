@@ -96,11 +96,7 @@ idf.py build flash monitor
 ```
 
 Joining the AP normally pops up your phone's captive-portal sign-in browser
-automatically. That popup is sandboxed by the OS and can't run the full app
-(no WebSocket, no local storage), so it shows a minimal landing page instead
-— tap **Open Configurator** there to launch the real app in your actual
-browser. See the [wiki](https://github.com/aartech-dev/ESCape32-WiFi-Link/wiki)
-for a screenshot of this landing page.
+automatically, loading the app directly — no extra tap needed.
 
 ### Building a different brand
 
