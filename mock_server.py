@@ -134,6 +134,17 @@ BRAND_VARS = {
         "BRAND_FOOTER_HTML": "NSR Programmer",
         "BRAND_SSID": "NSR-Programmer",
     },
+    "slotit": {
+        "BRAND":            "slotit",
+        "BRAND_LOGO":       "Slot.it",
+        "BRAND_TITLE":      "Slot.it Programmer",
+        "BRAND_SUBTITLE":   "Programmer",
+        "BRAND_FOOTER_HTML": (
+            'Slot.it Programmer &nbsp;&middot;&nbsp; '
+            '<a href="https://slot.it" target="_blank">slot.it</a>'
+        ),
+        "BRAND_SSID": "Slot.it-Programmer",
+    },
 }
 BRAND = "aart"  # overridden by --brand in main()
 

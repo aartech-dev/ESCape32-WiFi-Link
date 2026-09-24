@@ -56,6 +56,32 @@
 	--font-body:    system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 	--font-heading: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
+/* Slot.it brand theme — yellow / red-orange / black, sampled directly from
+   the official logo (slot.it): #F6E647 ellipse, ~#E84D26 wordmark. Browser-
+   standard system font, matching the NSR theme's approach. */
+:root[data-brand="slotit"] {
+	--bg:       #f6e647;
+	--bg2:      #f3e13c;
+	--bg3:      #efd934;
+	--bg4:      #e8cf28;
+	--border:   #d9c220;
+	--border2:  #b8a41a;
+	--text:     #1a1000;
+	--text2:    #4a3d10;
+	--text3:    #7a6d30;
+	--accent:   #e84d26;
+	--accent2:  #f06a45;
+	--accentbg: rgba(232,77,38,0.10);
+	--accentbg2:rgba(232,77,38,0.20);
+	--red:      #c0392b;
+	--redbg:    rgba(192,57,43,0.10);
+	--grn:      #1f9d55;
+	--grnbg:    rgba(31,157,85,0.10);
+	--sel:      #e84d26;
+	--val:      #1a1000;
+	--font-body:    system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+	--font-heading: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
 * { box-sizing: border-box; }
 html, body {
 	margin: 0; padding: 0;
@@ -84,6 +110,12 @@ html, body {
 	color: var(--accent);
 	text-transform: uppercase;
 	white-space: nowrap;
+}
+/* Slot.it's own wordmark is mixed-case ("Slot.it", not "SLOT.IT") —
+   preserve it instead of forcing the uppercase the other brands use. */
+:root[data-brand="slotit"] #header .logo {
+	text-transform: none;
+	letter-spacing: 0.02em;
 }
 #header .subtitle {
 	font-family: var(--font-body);
@@ -1550,7 +1582,21 @@ const BUILTIN_MOTORS_NSR = [
     params:{ damp:1,revdir:0,timing:15,freq_min:48,freq_max:48,duty_min:100,duty_max:100,duty_spup:20,duty_ramp:20,duty_rate:5,analog_min:0,analog_max:1440 }},
 ];
 
-const BUILTIN_MOTORS = BRAND === 'nsr' ? BUILTIN_MOTORS_NSR : BUILTIN_MOTORS_AART;
+// Slot.it tuning — from SlotitMotorTestResults.pdf (Sept 2025): timing,
+// freq_min/max, duty_spup, and duty_rate are the settings that test
+// concluded were the best compromise of startup time vs. current for the
+// 2,000Kv 1106 motor (timing=1/20/31 all measured worse on one axis or
+// another). duty_ramp wasn't part of that test; set equal to duty_rate,
+// consistent with this fork's other single-preset brand (NSR), absent
+// motor-specific data of its own.
+const BUILTIN_MOTORS_SLOTIT = [
+  { vendor:'Slot.it', model:'1106', poles:12, kvList:[2000],
+    params:{ damp:1,revdir:0,timing:12,freq_min:48,freq_max:48,duty_min:100,duty_max:100,duty_spup:20,duty_ramp:20,duty_rate:20,analog_min:0,analog_max:1440 }},
+];
+
+const BUILTIN_MOTORS = BRAND === 'nsr' ? BUILTIN_MOTORS_NSR
+	: BRAND === 'slotit' ? BUILTIN_MOTORS_SLOTIT
+	: BUILTIN_MOTORS_AART;
 
 // ── IndexedDB motor database ──────────────────────────────────────
 const DB_NAME = BRAND + '_motors', DB_VER = 1, STORE = 'motors';
@@ -1912,10 +1958,11 @@ function refreshSavedPresets() {
 /* ─────────────────────────────────────────────────────
    Init
 ───────────────────────────────────────────────────── */
-// NSR is a single-purpose programmer — the full parameter table
-// (Settings) and startup-melody editor (Music) aren't part of that product.
+// NSR and Slot.it are single-purpose programmers — the full parameter
+// table (Settings) and startup-melody editor (Music) aren't part of
+// either product.
 function removeUnbrandedTabs() {
-	if (BRAND !== 'nsr') return;
+	if (BRAND !== 'nsr' && BRAND !== 'slotit') return;
 	['item1', 'item2', 'tab1off', 'tab1on', 'tab2off', 'tab2on'].forEach(id => {
 		document.getElementById(id)?.remove();
 	});

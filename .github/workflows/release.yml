@@ -1,7 +1,7 @@
 name: Release
 
-# Builds both product brands (AART and NSR) from this one source tree and
-# attaches both as distinctly-named binaries on a single GitHub Release,
+# Builds all product brands (AART, NSR, Slot.it) from this one source tree
+# and attaches each as a distinctly-named binary on a single GitHub Release,
 # triggered by pushing any tag. See BRAND in the top-level CMakeLists.txt
 # for what differs between brands.
 on:
@@ -25,6 +25,8 @@ jobs:
             asset_name: AART-Remora-Programmer
           - brand: nsr
             asset_name: NSR-Programmer
+          - brand: slotit
+            asset_name: Slotit-Programmer
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -70,7 +72,7 @@ jobs:
           files: dist/*/*.bin
           generate_release_notes: true
           body: |
-            Dual-brand release, built and published automatically by [`.github/workflows/release.yml`](https://github.com/${{ github.repository }}/blob/master/.github/workflows/release.yml) from this tag.
+            Multi-brand release, built and published automatically by [`.github/workflows/release.yml`](https://github.com/${{ github.repository }}/blob/master/.github/workflows/release.yml) from this tag.
 
             ## Downloads
 
@@ -78,11 +80,12 @@ jobs:
             |---|---|
             | `AART-Remora-Programmer-${{ github.ref_name }}-ESP32-S2.bin` | AART Remora™ Programmer |
             | `NSR-Programmer-${{ github.ref_name }}-ESP32-S2.bin` | NSR Programmer |
+            | `Slotit-Programmer-${{ github.ref_name }}-ESP32-S2.bin` | Slot.it Programmer |
 
-            Both are single merged images — flash at **offset 0x0** with [Adafruit WebSerial ESPTool](https://adafruit.github.io/Adafruit_WebSerial_ESPTool) or:
+            All are single merged images — flash at **offset 0x0** with [Adafruit WebSerial ESPTool](https://adafruit.github.io/Adafruit_WebSerial_ESPTool) or:
 
             ```
             esptool --chip esp32s2 write-flash 0x0 <file>.bin
             ```
 
-            See the [wiki](https://github.com/${{ github.repository }}/wiki) for screenshots of every tab in both brands, and the [README](https://github.com/${{ github.repository }}#readme) for build-from-source instructions.
+            See the [wiki](https://github.com/${{ github.repository }}/wiki) for screenshots of every tab in all brands, and the [README](https://github.com/${{ github.repository }}#readme) for build-from-source instructions.

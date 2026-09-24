@@ -104,24 +104,33 @@ for a screenshot of this landing page.
 
 ### Building a different brand
 
-This same source tree also builds the **NSR Programmer** — a single-purpose
-variant for NSR's ESC only, with NSR's own color theme (white/red/black), a
-system-standard font instead of Trebuchet MS, an NSR-only built-in motor
-catalog, and no Settings/Music tabs. Select it with the `BRAND` CMake
-variable (default: `aart`):
+This same source tree also builds two single-purpose variants, each with its
+own color theme, a system-standard font instead of Trebuchet MS, a
+brand-only built-in motor catalog, and no Settings/Music tabs:
+
+- **NSR Programmer** — NSR's own color theme (white/red/black).
+- **Slot.it Programmer** — Slot.it's color theme (yellow/red-orange/black,
+  sampled from their logo), with a built-in preset for their 2,000Kv 1106
+  motor tuned from their own test data (`timing=12, freq_min=freq_max=48,
+  duty_spup=duty_rate=20`).
+
+Select a brand with the `BRAND` CMake variable (default: `aart`):
 
 ```bash
 idf.py set-target esp32s2
 idf.py build -D BRAND=nsr flash monitor
+# or: idf.py build -D BRAND=slotit flash monitor
 
-# Or build into a separate directory to keep both binaries around:
+# Or build into a separate directory to keep every binary around:
 idf.py -B build_nsr -D BRAND=nsr build
+idf.py -B build_slotit -D BRAND=slotit build
 ```
 
 `main/CMakeLists.txt` is the single source of truth for what differs
 between brands (logo text, colors, default AP name, built-in motors) — see
-the `BRAND STREQUAL "nsr"` block there. `mock_server.py --brand nsr` mirrors
-the same branding for local testing without hardware.
+the `BRAND STREQUAL "nsr"` / `"slotit"` blocks there. `mock_server.py
+--brand nsr` (or `--brand slotit`) mirrors the same branding for local
+testing without hardware.
 
 ---
 
