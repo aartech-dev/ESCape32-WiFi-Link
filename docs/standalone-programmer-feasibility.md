@@ -75,22 +75,60 @@ Two real options, and this is the one design choice that reaches beyond the prog
 
 **Open dependency:** whether the eCom board has (or would need) dedicated probe-friendly pads is a question for the board's own design, not something this document can answer — worth a conversation with whoever owns that PCB before committing to the pogo-pin approach specifically.
 
+## Alternative: Flipper Zero
+
+Instead of building the custom hardware above, write a Flipper Zero app. This isn't a stretch: verified against Flipper's own documentation, the hardware and toolchain already line up closely with what this device needs.
+
+**Every hardware line item in this document is already solved:**
+
+| Need | Custom build (above) | Flipper Zero |
+| --- | --- | --- |
+| MCU | ESP32-C3 or STM32G0 | STM32WB55 (already inside) |
+| Display | SSD1306 OLED, sourced separately | 128×64 monochrome LCD (already inside) |
+| Input | Rotary encoder + button, sourced separately | 5-way d-pad + back button (already inside) |
+| Power | USB-C 5V, regulator | Internal rechargeable battery, USB-C charging (already inside) |
+| Enclosure | New mechanical design — the single highest-effort item in this whole document | Already a finished, mass-produced case |
+
+**UART — confirmed compatible, not assumed:** Flipper Zero exposes two hardware UARTs on its GPIO header (pins 13/14, and pins 15/16), officially supporting baud rates from 4800 up to 115200 — **including 38400, an exact match** for the rate this project already uses (`main/main.c`'s `uart_config_t`). Logic level is 3.3V, the same as the ESP32-S2's own UART; a level shifter is only needed if the eCom's UART turns out to be 5V, which is unlikely given it's a modern MCU-based ESC.
+
+**Dev path is real and current:** `ufbt` (Flipper's official lightweight build tool) compiles a `.fap` (Flipper Application Package) — sideload it for free via USB or SD card, or publish to Flipper's official App Catalog for install through their mobile app, with a verification/bundling step but no Apple-style adversarial review.
+
+**The reframe this enables:** rather than AART manufacturing and selling a device, this could ship as a **free app for people who already own a Flipper Zero** — zero BOM cost, zero manufacturing, zero inventory. The real tradeoffs: dependency on a third-party hardware platform and SDK outside AART's control, and it only reaches users who already own a ~$170 device — a real but niche overlap between hardware-hacker hobbyists and slot-car ESC tinkerers, not a mass-market substitute for the custom-hardware path above.
+
+## If WiFi Is Added: a Central Settings Database
+
+A longer-standing goal, not specific to any one device: if the device on hand has WiFi, it could pull motor settings — and eventually track-specific tuned presets, the way racers already share track setups — from a central, community-shared database instead of relying on the browser-local IndexedDB Motor DB `root.html` uses today. That local-only DB is itself the gap this would close: nothing in the product today syncs a motor profile between two people, or even between two browsers for the same person.
+
+**Getting WiFi onto either device turns out to be easy, and keeps landing on hardware this team already knows:**
+
+- **Flipper Zero** has no WiFi of its own (its onboard radio is BLE-only), but Flipper's official **WiFi Devboard** add-on — confirmed via their own product docs — is built on an **ESP32-S2**, the *exact chip* `main/main.c` already targets. Community projects (e.g. ESP32Marauder) already reflash this board with custom firmware, so building a small HTTP-client app for it isn't a stretch, and any ESP-IDF experience from the WiFi-Link firmware carries over directly.
+- **The custom-hardware path** already had this covered: the Hardware section above suggested ESP32-C3 specifically so "a wireless option stays open later... without a hardware respin" — this is that option being exercised. Simpler than the Flipper path, since WiFi is built into the same chip rather than a second board.
+
+**What this actually requires — and it's bigger than a device feature:** a backend web service that doesn't exist today. At minimum: a hosted API serving motor specs (the data model can likely mirror the existing client-side schema — vendor, model, Kv rated/measured, pole count, stator geometry, winding details, etc. — rather than needing new design), a decision on write access (open/wiki-style community contributions vs. AART-curated), and, for the track-database idea specifically, a new data model associating presets with tracks/venues that doesn't exist in any form yet.
+
+**Worth sequencing deliberately:** this would benefit the *existing* WiFi-Link browser app at least as much as either new device — a browser can call a web API immediately, with no new hardware or firmware at all. Validating the backend and data model there first, before extending it to a Flipper app or custom device with a much smaller screen and no keyboard, is probably the lower-risk order to build it in.
+
 ## Effort, Risk & Open Questions
 
 | Component | Effort | Risk |
 | --- | --- | --- |
-| MCU + OLED + encoder selection | Low — commodity parts, well-trodden combination | Low |
+| *Alternative:* Flipper Zero app (`.fap` via ufbt) | Low — hardware/display/input/case/power all pre-solved, just a UI + UART client to write | Low–Medium — depends on a third-party SDK/platform, but a mature and actively maintained one |
+| MCU + OLED + encoder selection (custom build) | Low — commodity parts, well-trodden combination | Low |
 | Firmware: UART command layer | Low — reuses the existing protocol verbatim, no new design | Low |
 | Firmware: menu/navigation UI | Medium — new code, but a standard embedded-UI pattern | Low–Medium |
-| Power (USB-C 5V) | Low | Low |
+| Power (USB-C 5V, custom build) | Low | Low |
 | Connector: cable + header | Low — mirrors the existing WiFi-Link↔ESC link | Low |
 | Connector: pogo-pin probe | Medium–High — needs eCom board pad coordination, alignment/wrong-hookup protection | Medium — depends on a PCB change outside this device's own scope |
-| Enclosure/case | Medium — the first mechanical-design item in this whole line of exploration; everything before this was software or off-the-shelf modules | Medium — tooling cost, feel-in-hand matters for a €100-class product |
+| Enclosure/case (custom build only — moot for Flipper) | Medium — tooling cost, feel-in-hand matters for a €100-class product | Medium |
+| WiFi on-device (ESP32-C3 native, or Flipper's ESP32-S2 WiFi Devboard) | Low — both paths land on a chip this team already knows | Low |
+| Central settings-database backend (new infrastructure) | High — a web service, data model, and access-control policy that don't exist today, independent of any device | Medium — scope/ownership questions, not a technical risk |
 
 ### Open questions
 
-- Cable+header or pogo-pin probe — and does the eCom board have, or need, dedicated probe pads? This is the one item here that isn't purely this device's own decision.
+- **Build custom hardware, or ship a free Flipper Zero app, or both?** They serve different audiences (general public vs. existing Flipper owners) and could coexist — the firmware's UART command layer is identical either way.
+- Cable+header or pogo-pin probe (custom build) — and does the eCom board have, or need, dedicated probe pads? This is the one item here that isn't purely this device's own decision.
 - Which parameter set ships in v1 — eCom essentials only, or the full Settings table too? Affects menu depth and development time.
 - MCU: ESP32-C3 (team familiarity, future wireless headroom) vs. a cheaper Cortex-M0 part purely for BOM cost at volume — does volume justify optimizing for unit cost yet?
-- Encoder-only vs. encoder-plus-back-button — worth a quick physical mockup before committing either way.
+- Encoder-only vs. encoder-plus-back-button (custom build) — worth a quick physical mockup before committing either way.
 - Is this a product sold alongside the ESC (LatSlot's model, €100), or a bundled/included accessory? Changes the cost-vs-polish tradeoff throughout.
+- **Is the central settings/track database worth scoping as its own project?** It's valuable independent of any device here (the existing browser app has the same local-only gap), and "always a plan" suggests real appetite — probably deserves its own feasibility doc rather than staying a subsection of this one.
