@@ -18,7 +18,8 @@ aart_remora_programmer/
 ├── test_mock.py                  ← Automated Python test suite
 │
 ├── docs/                         ← Design/feasibility docs (not user-facing)
-│   └── midi-direct-connect-feasibility.md
+│   ├── midi-direct-connect-feasibility.md
+│   └── standalone-programmer-feasibility.md
 │
 └── main/                         ← ESP-IDF component (application source)
     ├── CMakeLists.txt            ← Embeds & gzips root*.* at build time
